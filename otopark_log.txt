@@ -1,2 +1,1 @@
-06 AKK 29,Ankara,Giris
-21 akk 29,Diyarbakir,Giris
+06 HC 029,Ankara,Giris
