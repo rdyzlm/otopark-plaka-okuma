@@ -1,0 +1,2 @@
+06 AKK 29,Ankara,Giris
+21 akk 29,Diyarbakir,Giris

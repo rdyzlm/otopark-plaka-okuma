@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otopark Simülasyonu</title>
+     <link rel="icon" type="image/x-icon" href="/logo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+ 
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h1 class="text-center text-uppercase header-title mb-5">Otopark Plaka Tanıma Sistemi</h1>
+
+        <div class="row">
+            <div class="col-md-7 mb-4">
+                <div class="card-custom h-100">
+                    <h2>Araç Kayıtları</h2>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Plaka</th>
+                                    <th>Geldiği Şehir</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody id="arac-listesi">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5 mb-4">
+                <div class="card-custom h-100">
+                    <h2>Şehir İstatistiği</h2>
+                    <ul class="list-group list-group-flush" id="sehir-dagilimi">
+                        </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        fetch('otopark_log.txt')
+            .then(response => response.text())
+            .then(data => {
+                const satirlar = data.split('\n');
+                const aracListesiDOM = document.getElementById('arac-listesi');
+                const sehirDagilimiDOM = document.getElementById('sehir-dagilimi');
+                
+                let sehirSayilari = {};
+
+                satirlar.forEach(satir => {
+                    if (satir.trim() !== '') {
+                        const parcalar = satir.split(',');
+                        const plaka = parcalar[0];
+                        const sehir = parcalar[1];
+                        const durum = parcalar[2];
+
+                        aracListesiDOM.innerHTML += `
+                            <tr>
+                                <td class="fw-bold text-white">${plaka}</td>
+                                <td>${sehir}</td>
+                                <td><span class="badge badge-durum px-3 py-2">${durum}</span></td>
+                            </tr>
+                        `;
+
+                        if (sehirSayilari[sehir]) {
+                            sehirSayilari[sehir]++;
+                        } else {
+                            sehirSayilari[sehir] = 1;
+                        }
+                    }
+                });
+
+                for (const [sehir, sayi] of Object.entries(sehirSayilari)) {
+                    sehirDagilimiDOM.innerHTML += `
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            ${sehir}
+                            <span class="badge badge-sayi rounded-pill px-3 py-2">${sayi} Araç</span>
+                        </li>
+                    `;
+                }
+            })
+            .catch(error => console.error('Veri okunurken hata oluştu:', error));
+    </script>
+</body>
+</html>
